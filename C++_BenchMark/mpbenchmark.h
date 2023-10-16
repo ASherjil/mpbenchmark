@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<omp.h>
 #include<cstring>
+#include<vector>
 
 namespace SharedThreadData{
 	//std::mutex mutexLock;
@@ -36,7 +37,7 @@ const double dburner = 515.2;
 const double dturbin = 515.2;
 const double dnozl = 515.2;
 // arrays, store input and output data
-double** inputArray;
-double** outputArray;
+std::vector<std::vector<double>> inputArray;
+std::vector<std::vector<double>> outputArray;
 
 int LineCount = 0;
