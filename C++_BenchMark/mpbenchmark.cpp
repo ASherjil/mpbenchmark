@@ -562,50 +562,45 @@ void InitializeArray(){
 }
 
 void printResult(){
-	// header for results
-	printf("T,ExecTime,  Spd| Alt |  Thr| Mach|Press| Temp| Fnet|Fgros|RamDr|FlFlo|TSFC|Airfl|Weight|Fn/W\n");
-	int i=0;
-	for (i = 0; i < LineCount; i++) {
-		printf("%d,%7f, %4.0f|%5.0f|%5.1f|%5.3f|%5.2f|%5.1f|%5.0f|%5.0f|%5.0f|%5.0f|%4.2f|%5.1f|%6.2f|%4.2f\n     %3.1f%% used for point %d\n",
-								(int) outputArray[i][0], outputArray[i][1], outputArray[i][2], outputArray[i][3],
-								outputArray[i][4], outputArray[i][5], outputArray[i][6], outputArray[i][7],
-								outputArray[i][8], outputArray[i][9], outputArray[i][10], outputArray[i][11],
-								outputArray[i][12], outputArray[i][13], outputArray[i][14], outputArray[i][15],
-								outputArray[i][16], (int) outputArray[i][17]);
+	// Printing the header of the table.
+	fmt::print("T,ExecTime,  Spd| Alt |  Thr| Mach|Press| Temp| Fnet|Fgros|RamDr|FlFlo|TSFC|Airfl|Weight|Fn/W\n");
+
+	// Iterating through 'outputArray' and printing each entry.
+	for (int i = 0; i < LineCount; i++) {
+	    fmt::print("{},{:7f}, {:4.0f}|{:5.0f}|{:5.1f}|{:5.3f}|{:5.2f}|{:5.1f}|{:5.0f}|{:5.0f}|{:5.0f}|{:5.0f}|{:4.2f}|{:5.1f}|{:6.2f}|{:4.2f}\n     {:3.1f}% used for point {}\n",
+	                            static_cast<int>(outputArray[i][0]), outputArray[i][1], outputArray[i][2], outputArray[i][3],
+	                            outputArray[i][4], outputArray[i][5], outputArray[i][6], outputArray[i][7],
+	                            outputArray[i][8], outputArray[i][9], outputArray[i][10], outputArray[i][11],
+	                            outputArray[i][12], outputArray[i][13], outputArray[i][14], outputArray[i][15],
+	                            outputArray[i][16], static_cast<int>(outputArray[i][17]));
 	}
-	
-	printf("%d\n", NumMissed);
-	printf("Thread response time sum:%f\n", TotalTime);
-	printf("Number of threads : %d\n", NUM_THREADS);
-	printf("Number of points : %d\n", NumPoints);
+
+	// Additional print statements.
+	fmt::print("{}\n", NumMissed);
+	fmt::print("Thread response time sum:{:f}\n", TotalTime);
+	fmt::print("Number of threads : {}\n", NUM_THREADS);
+	fmt::print("Number of points : {}\n", NumPoints);
 	double benchmarkTotalTime = (BenchmarEndTime - BenchmarkStartTime);
-	printf("%f\n", benchmarkTotalTime);
+	fmt::print("{:5f}\n", benchmarkTotalTime);
 
 	//write into file>>>>>>>>>>>>>>>>>>>>>>>>
-	FILE *res;
-	FILE *dl;
-	char resPath[255];
-	char dlPath[255];
-	char strCores[255];
-	sprintf(strCores, "%d", NUM_THREADS);
-    strcpy (resPath,"..//IOFiles//C//ResponseTimeForCore");
-    strcat (resPath,strCores);
-    strcat (resPath,".txt");
-    strcpy (dlPath,"..//IOFiles//C//DeadLineForCore");
-    strcat (dlPath,strCores);
-    strcat (dlPath,".txt");
 
-	res=fopen(resPath,"a+");
-	char resTime[50];
-	sprintf(resTime,"%f\n",benchmarkTotalTime);
-	fwrite(resTime,sizeof(resTime[0]),strlen(resTime),res);
+    // Construct file paths using string concatenation
+    std::string strCores = std::to_string(NUM_THREADS);
+    std::string resPath = "..//IOFiles//C//ResponseTimeForCore" + strCores + ".txt";
+    std::string dlPath = "..//IOFiles//C//DeadLineForCore" + strCores + ".txt";
 
-	dl=fopen(dlPath,"a+");
-	char deadLineMiss[50];
-	sprintf(deadLineMiss,"%d\n",NumMissed);
-	fwrite(deadLineMiss,sizeof(deadLineMiss[0]),strlen(deadLineMiss),dl);
+    // Open file streams for writing (appending to the files). The ofstream destructor will close the file automatically.
+    std::ofstream resFile(resPath, std::ios_base::app); // Open for appending
+    std::ofstream dlFile(dlPath, std::ios_base::app); // Open for appending
 
-	fclose(res);
-	fclose(dl);
+    // Check if the file streams are opened properly
+    if (!resFile.is_open() || !dlFile.is_open()) {
+        std::cerr << "Error opening file(s) for writing." << std::endl;
+        return; // Optional: handle the error as appropriate for your application
+    }
 
+    // Write formatted data to the files
+    resFile << benchmarkTotalTime << '\n';
+    dlFile << NumMissed << '\n';
 }
