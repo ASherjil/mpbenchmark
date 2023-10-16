@@ -2,6 +2,11 @@
 #include<stdlib.h>
 #include<omp.h>
 #include<cstring>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+
 #include "utilities.hpp"
 
 namespace Utilities{
@@ -198,6 +203,43 @@ double getCp(double temp) {
 	d = 0.2245283;
 	number = a * temp * temp * temp + b * temp * temp + c * temp + d;
 	return (number);
+}
+
+FileDataLoader::FileDataLoader(std::string_view inputPath, std::string_view outputPath)
+	:m_inputFilePath{inputPath}, m_outputFilePath{outputPath}{
+
+	// Open the file with ifstream in read mode.
+    std::ifstream file(m_inputFilePath);
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open file " << m_inputFilePath << std::endl;
+        return;
+    }
+
+	// Temporary variables to hold data read from the file.
+    double a{}, b{}, c{}, d{};
+  	// Read the file data.
+    while (file >> a >> b >> c >> d) {
+        // For each line in the file, create a new vector and add it to 'inputArray'.
+        m_inputArray.push_back({a, b, c, d});
+		//LineCount++;
+    }
+	
+	m_outputArray.resize(m_inputArray.size(), std::vector<double>(18));
+
+	// Close the file after reading.
+    file.close();
+}
+
+double FileDataLoader::getInputArrayElement(int row, int column) const{
+	return m_inputArray[row][column];
+}
+
+void FileDataLoader::insertInOutputArray(int row, int column, double data){
+	m_outputArray[row][column] = data;
+}
+
+void FileDataLoader::writeAndPrintResults(){
+	
 }
 
 }

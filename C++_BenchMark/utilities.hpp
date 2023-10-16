@@ -2,6 +2,11 @@
 #ifndef UTILITIES_HPP
 #define UTILITIES_HPP
 
+#include<string_view>
+#include<vector>
+#include<string>
+
+
 namespace Utilities{
 
 constexpr double PRECISION = 0.0001;
@@ -35,6 +40,20 @@ double getRayleighLoss(double mach1, double ttrat, double tlow);
 
 /* Utility to get cp as a function of temperature */
 double getCp(double temp);
+
+class FileDataLoader{
+    public:
+        FileDataLoader(std::string_view inputPath, std::string_view outputPath);
+        double getInputArrayElement(int row, int column) const;
+        void insertInOutputArray(int row, int column, double data);
+        void writeAndPrintResults();
+    private:
+        std::string m_inputFilePath;
+        std::string m_outputFilePath;
+        std::vector<std::vector<double>> m_inputArray;
+        std::vector<std::vector<double>> m_outputArray;
+};
+
 }
 
 

@@ -562,6 +562,7 @@ void InitializeArray(){
 }
 
 void printResult(){
+	/*
 	// Printing the header of the table.
 	fmt::print("T,ExecTime,  Spd| Alt |  Thr| Mach|Press| Temp| Fnet|Fgros|RamDr|FlFlo|TSFC|Airfl|Weight|Fn/W\n");
 
@@ -580,6 +581,7 @@ void printResult(){
 	fmt::print("Thread response time sum:{:f}\n", TotalTime);
 	fmt::print("Number of threads : {}\n", NUM_THREADS);
 	fmt::print("Number of points : {}\n", NumPoints);
+	*/
 	double benchmarkTotalTime = (BenchmarEndTime - BenchmarkStartTime);
 	fmt::print("{:5f}\n", benchmarkTotalTime);
 
