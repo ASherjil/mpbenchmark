@@ -1,2 +1,2 @@
 rm -f mpbenchmark
-gcc -O2 -fopenmp -o mpbenchmark mpbenchmark.c
+g++ -O2 -fopenmp -o mpbenchmark mpbenchmark.cpp -lfmt
