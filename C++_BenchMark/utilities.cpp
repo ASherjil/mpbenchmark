@@ -221,7 +221,6 @@ FileDataLoader::FileDataLoader(std::string_view inputPath, std::string_view outP
     while (file >> a >> b >> c >> d) {
         // For each line in the file, create a new vector and add it to 'inputArray'.
         m_inputArray.push_back({a, b, c, d});
-		//LineCount++;
     }
 
 	// Close the file after reading.
