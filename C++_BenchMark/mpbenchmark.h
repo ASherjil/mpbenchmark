@@ -4,13 +4,12 @@
 #include<cstring>
 #include<vector>
 
-namespace SharedThreadData{
-	//std::mutex mutexLock;
 
-	int NumPoints{}, NumMissed{};
-	double TotalTimePoint{};
-	double TotalTime{}, TotalUsed {};
-};
+
+int NumPoints{}, NumMissed{};
+double TotalTimePoint{};
+double TotalTime{}, TotalUsed {};
+
 
 
 int main(int argc,char *argv[]);

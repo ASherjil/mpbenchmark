@@ -15,10 +15,11 @@ class SharedPerformanceData{
         void increaseNumMissed(int missed);
         void increaseTotalTimePoint(double totalTimePoint);
         double getInputArrayElement(int row, int column)const;
+        int  getLineCount()const;
         void setOutputArrayElement(int row, int column, double data);
     private:
         mutable std::mutex m_mutexLock;
-        int    m_lineCount{};
+        const int m_lineCount{};
         int    m_numPoints{}; 
         int    m_numMissed{};
 	    double m_totalTimePoint{};

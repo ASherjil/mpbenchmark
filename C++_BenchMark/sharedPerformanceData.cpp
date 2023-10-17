@@ -1,9 +1,7 @@
 #include "sharedPerformanceData.hpp"
 
 SharedPerformanceData::SharedPerformanceData(const std::vector<std::vector<double>>& inputArray)
-    :m_inputDataRef{inputArray}{
-        m_lineCount = m_inputDataRef.size();
-    }
+    :m_inputDataRef{inputArray}, m_lineCount{inputArray.size()}{}
 
 bool   SharedPerformanceData::isLineCountGreaterThanNumPoints()const{
     std::lock_guard<std::mutex> guard(m_mutexLock);
@@ -40,6 +38,10 @@ void  SharedPerformanceData::increaseNumMissed(int missed){
 void  SharedPerformanceData::increaseTotalTimePoint(double totalTimePoint){
     std::lock_guard<std::mutex> guard(m_mutexLock);
     m_totalTimePoint += totalTimePoint;
+}
+
+int SharedPerformanceData::getLineCount()const{
+    return m_lineCount;
 }
 
 double SharedPerformanceData::getInputArrayElement(int row, int column)const{

@@ -1,6 +1,7 @@
 #include "mpbenchmark.h"
 #include "utilities.hpp"
 #include "sharedPerformanceData.hpp"
+#include "worker.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -8,7 +9,6 @@
 #include <fmt/core.h> // Include the fmt library header for printing 
 
 using namespace Utilities; 
-using namespace SharedThreadData;
 
 int main(int argc,char *argv[])
 {
