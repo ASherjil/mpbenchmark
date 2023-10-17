@@ -205,8 +205,8 @@ double getCp(double temp) {
 	return (number);
 }
 
-FileDataLoader::FileDataLoader(std::string_view inputPath, std::string_view outputPath)
-	:m_inputFilePath{inputPath}, m_outputFilePath{outputPath}{
+FileDataLoader::FileDataLoader(std::string_view inputPath, std::string_view outPathBenchmark, std::string_view outPathDeadline)
+	:m_inputFilePath{inputPath}, m_outputFilePathBenchmark{outPathBenchmark}, m_outputFilePathDeadline{outPathDeadline}{
 
 	// Open the file with ifstream in read mode.
     std::ifstream file(m_inputFilePath);
@@ -223,23 +223,36 @@ FileDataLoader::FileDataLoader(std::string_view inputPath, std::string_view outp
         m_inputArray.push_back({a, b, c, d});
 		//LineCount++;
     }
-	
-	m_outputArray.resize(m_inputArray.size(), std::vector<double>(18));
 
 	// Close the file after reading.
     file.close();
 }
 
-double FileDataLoader::getInputArrayElement(int row, int column) const{
-	return m_inputArray[row][column];
+const std::vector<std::vector<double>>& FileDataLoader::getInputArray()const{
+	return m_inputArray;
 }
 
-void FileDataLoader::insertInOutputArray(int row, int column, double data){
-	m_outputArray[row][column] = data;
-}
+void FileDataLoader::writeDataToFile(int threads, double benchmarkTime, int deadlinesMissed){
+	//write into file>>>>>>>>>>>>>>>>>>>>>>>>
 
-void FileDataLoader::writeAndPrintResults(){
-	
+    // Construct file paths using string concatenation
+    std::string strCores = std::to_string(threads);
+    std::string resPath  = m_outputFilePathBenchmark + strCores + ".txt";
+    std::string dlPath   = m_outputFilePathDeadline + strCores + ".txt";
+
+    // Open file streams for writing (appending to the files). The ofstream destructor will close the file automatically.
+    std::ofstream resFile(resPath, std::ios_base::app); // Open for appending
+    std::ofstream dlFile(dlPath, std::ios_base::app); // Open for appending
+
+    // Check if the file streams are opened properly
+    if (!resFile.is_open() || !dlFile.is_open()) {
+        std::cerr << "Error opening file(s) for writing." << std::endl;
+        return; // Optional: handle the error as appropriate for your application
+    }
+
+    // Write formatted data to the files
+    resFile << benchmarkTime << '\n';
+    dlFile << deadlinesMissed << '\n';
 }
 
 }

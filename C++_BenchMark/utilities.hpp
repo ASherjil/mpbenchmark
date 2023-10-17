@@ -43,15 +43,14 @@ double getCp(double temp);
 
 class FileDataLoader{
     public:
-        FileDataLoader(std::string_view inputPath, std::string_view outputPath);
-        double getInputArrayElement(int row, int column) const;
-        void insertInOutputArray(int row, int column, double data);
-        void writeAndPrintResults();
+        FileDataLoader(std::string_view inputPath, std::string_view outPathBenchmark, std::string_view outPathDeadline);
+        void writeDataToFile(int threads, double benchmarkTime, int deadlinesMissed);
+        const std::vector<std::vector<double>>& getInputArray()const;
     private:
         std::string m_inputFilePath;
-        std::string m_outputFilePath;
+        std::string m_outputFilePathBenchmark;
+        std::string m_outputFilePathDeadline;
         std::vector<std::vector<double>> m_inputArray;
-        std::vector<std::vector<double>> m_outputArray;
 };
 
 }
