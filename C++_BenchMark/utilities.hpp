@@ -2,9 +2,9 @@
 #ifndef UTILITIES_HPP
 #define UTILITIES_HPP
 
-#include<string_view>
-#include<vector>
-#include<string>
+#include <string_view>
+#include <vector>
+#include <string>
 
 
 namespace Utilities{

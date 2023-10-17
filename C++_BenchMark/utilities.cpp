@@ -1,12 +1,6 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<omp.h>
-#include<cstring>
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <sstream>
-
 #include "utilities.hpp"
 
 namespace Utilities{

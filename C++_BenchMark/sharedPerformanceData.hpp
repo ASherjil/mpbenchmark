@@ -6,7 +6,7 @@
 
 class SharedPerformanceData{
     public:
-        SharedPerformanceData(const std::vector<std::vector<double>>& inputArray);
+        SharedPerformanceData(const std::vector<std::vector<double>>& inputArray, int numThreads);
         bool isLineCountGreaterThanNumPoints()const;
         int  nextNumPoints();
         void decrementNextNumPoints();
@@ -22,6 +22,7 @@ class SharedPerformanceData{
     private:
         mutable std::mutex m_mutexLock;
         const int m_lineCount;
+        const int m_numThreads;
         int    m_numPoints{}; 
         int    m_numMissed{};
 	    double m_totalTimePoint{};

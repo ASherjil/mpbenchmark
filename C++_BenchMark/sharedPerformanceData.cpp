@@ -1,8 +1,8 @@
 #include "sharedPerformanceData.hpp"
 #include <fmt/core.h>
 
-SharedPerformanceData::SharedPerformanceData(const std::vector<std::vector<double>>& inputArray)
-    :m_lineCount{inputArray.size()}, m_inputDataRef{inputArray}, m_outputArray{m_lineCount, std::vector<double>(18, 0.0)}{}
+SharedPerformanceData::SharedPerformanceData(const std::vector<std::vector<double>>& inputArray, int numThreads)
+    :m_lineCount{inputArray.size()},m_numThreads{numThreads} ,m_inputDataRef{inputArray}, m_outputArray{m_lineCount, std::vector<double>(18, 0.0)}{}
 
 bool   SharedPerformanceData::isLineCountGreaterThanNumPoints()const{
     std::lock_guard<std::mutex> guard(m_mutexLock);
@@ -28,7 +28,7 @@ void  SharedPerformanceData::increaseTotalTime(double totalTime){
 
 void  SharedPerformanceData::increaseTotalUsed(double totalUsed){
     std::lock_guard<std::mutex> guard(m_mutexLock);
-    m_totalTime += totalUsed;
+    m_totalUsed += totalUsed;
 }
 
 void  SharedPerformanceData::increaseNumMissed(int missed){
@@ -75,5 +75,6 @@ void   SharedPerformanceData::printPerformanceData()const{
 	// Additional print statements.
 	fmt::print("{}\n", m_numMissed);
 	fmt::print("Thread response time sum:{:f}\n", m_totalTime);
+    fmt::print("Number of threads : {}\n", m_numThreads);
 	fmt::print("Number of points : {}\n", m_numPoints);
 }

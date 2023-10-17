@@ -1,9 +1,9 @@
-#include "utilities.hpp"
-#include "sharedPerformanceData.hpp"
-#include "worker.hpp"
 #include <string>
 #include <thread>
 #include <fmt/core.h> // Include the fmt library header for printing 
+#include "utilities.hpp"
+#include "sharedPerformanceData.hpp"
+#include "worker.hpp"
 
 
 int main(int argc,char *argv[]){
@@ -47,13 +47,12 @@ int main(int argc,char *argv[]){
 										  "..//IOFiles//C//ResponseTimeForCore",
 										  "..//IOFiles//C//DeadLineForCore");
 
-	SharedPerformanceData performanceData(fileHandler.getInputArray());
+	SharedPerformanceData performanceData(fileHandler.getInputArray(), numThreads);
 	std::vector<std::thread> threadPool;
 	threadPool.reserve(numThreads);
 
-	// Get the time point at the start of the benchmark
+//----------START TIMING NOW 
 	auto BenchmarkStartTime = std::chrono::high_resolution_clock::now();
-
 	for (int i{};i<numThreads;++i){ // start the threads 
 		Worker worker(performanceData, engine, i);
 		threadPool.emplace_back(std::thread(worker));
@@ -64,13 +63,12 @@ int main(int argc,char *argv[]){
     	    t.join(); 
     	}
 	}
-
-	// Get the time point at the end of the benchmark
 	auto BenchmarkEndTime = std::chrono::high_resolution_clock::now();
-	double benchmarkTotalTime = std::chrono::duration<double>(BenchmarkEndTime - BenchmarkStartTime).count();
+//-----------END TIMING NOW 
 
-	// uncomment below to see the printed results
-	//performanceData.printPerformanceData();
+	double benchmarkTotalTime = std::chrono::duration<double>(BenchmarkEndTime - BenchmarkStartTime).count();
+	
+	performanceData.printPerformanceData();
 	fmt::print("{:5f}\n", benchmarkTotalTime);
 
 	// Write all the necessary data to .txt file 
