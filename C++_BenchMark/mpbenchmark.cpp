@@ -1,6 +1,6 @@
 #include "mpbenchmark.h"
 #include "utilities.hpp"
-
+#include "sharedPerformanceData.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>
