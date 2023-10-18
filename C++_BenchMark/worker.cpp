@@ -2,7 +2,7 @@
 #include <chrono>
 #include "worker.hpp"
 
-using namespace Utilities;
+using namespace Utilities; // import all functions from the namespace Utilities 
 
 Worker::Worker(SharedPerformanceData& sharedData, int engine, int id)
     :m_sharedData{sharedData}, m_engine{engine}, m_id{id}{

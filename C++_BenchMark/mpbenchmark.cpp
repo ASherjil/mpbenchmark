@@ -40,21 +40,24 @@ int main(int argc,char *argv[]){
             engine = 3; // Reset to default
             break;
     }
-    // Informing the user about the number of threads
+
     fmt::print("Using {} threads\n", numThreads);
 
+    // Load data from input .txt file into an array.
 	Utilities::FileDataLoader fileHandler("..//IOFiles//InputFile.txt",
 										  "..//IOFiles//C//ResponseTimeForCore",
 										  "..//IOFiles//C//DeadLineForCore");
 
+    // Pass the input data from the .txt file into the SharedPerformanceObject.
 	SharedPerformanceData performanceData(fileHandler.getInputArray(), numThreads);
-	std::vector<std::thread> threadPool;
+
+	std::vector<std::thread> threadPool; // create a threadpool
 	threadPool.reserve(numThreads);
 
 //----------START TIMING NOW 
 	auto BenchmarkStartTime = std::chrono::high_resolution_clock::now();
 	for (int i{};i<numThreads;++i){ // start the threads 
-		Worker worker(performanceData, engine, i);
+		Worker worker(performanceData, engine, i);// each worker thread has access to the SharedPerformanceData object 
 		threadPool.emplace_back(std::thread(worker));
 	}
 

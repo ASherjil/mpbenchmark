@@ -4,16 +4,36 @@
 #include "utilities.hpp"
 #include "sharedPerformanceData.hpp"
 
+/**
+ * @brief The class passed into thread object for performing all the calculations.
+ * Will store results in the SharedData object. This class is a functor class(or callable class).
+ */
 class Worker{
     public:
+	   /**
+	    * @brief Construct a new Worker object. 
+	    * @param sharedData Reference to the SharedData object that contains the performance data.
+	    * @param engine Engine selected by the user.
+	    * @param id ID of the thread worker. 
+	    */
         Worker(SharedPerformanceData& sharedData, int engine, int id);
+
+		/**
+		 * @brief Function call operator is overloaded to run in threads. 
+		 * (Effectively a "run" function).
+		 */
         void operator()();
     private:
+        /// @brief Reference to the SharedPerformanceData.
         SharedPerformanceData& m_sharedData;
         const int m_engine;
         const int m_id;
 
-        // readonly variables 
+
+/* All variables/functions below  were copied from the C# source code, therefore
+   the "m_" prefix was not added to them.
+*/
+        // readonly variables
 		static constexpr double g0 = 32.2;
 		static constexpr double gama = 1.4;
 		static constexpr double tt4 = 2500.0;
@@ -57,7 +77,6 @@ class Worker{
         void getThermo();
         void calcPerf();
         void getGeo();
-
 };
 
 #endif // WORKER_HPP
