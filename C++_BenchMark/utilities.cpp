@@ -1,12 +1,6 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<omp.h>
-#include<cstring>
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <sstream>
-
 #include "utilities.hpp"
 
 namespace Utilities{
@@ -221,7 +215,6 @@ FileDataLoader::FileDataLoader(std::string_view inputPath, std::string_view outP
     while (file >> a >> b >> c >> d) {
         // For each line in the file, create a new vector and add it to 'inputArray'.
         m_inputArray.push_back({a, b, c, d});
-		//LineCount++;
     }
 
 	// Close the file after reading.
