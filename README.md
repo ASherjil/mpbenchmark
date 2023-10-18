@@ -15,3 +15,39 @@ RAM: 16GB
 OS: Ubuntu Linux 22.04.3 LTS 
 
 ![benchmark_results](https://github.com/ASherjil/mpbenchmark/assets/92602684/9ff36bc6-016e-4ba1-b7a2-b9a47daffbbb)
+
+# Installation and usage
+
+(Linux only for now)
+
+1- First make sure to install CMake and the `fmt` C++ library. 
+
+2- Clone this repository and create a "build" folder inside it. You can do this by running the commands:
+
+```
+mkdir build
+cd build
+```
+
+3- Now run cmake and build the project. You can use these commands:
+
+```
+cmake ..
+
+cmake --build .
+```
+
+4- Once the build is successfull then run the executable. You can supply it with the engine type(1, 2 or 3) and specify the threads to use as the command line arguments. You can also leave this blank to use the default parameters.
+Run this for the default configuration:
+
+`
+./MPBenchmark 
+`
+
+Run this to use engine 1 and 12 threads:
+
+`
+./MPBenchmark 1 12
+`
+
+
