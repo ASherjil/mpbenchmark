@@ -71,8 +71,8 @@ int main(int argc,char *argv[]){
 
 	double benchmarkTotalTime = std::chrono::duration<double>(BenchmarkEndTime - BenchmarkStartTime).count();
 	
-	performanceData.printPerformanceData();
-	fmt::print("{:5f}\n", benchmarkTotalTime);
+	//performanceData.printPerformanceData();
+	fmt::print("{:6f}\n", benchmarkTotalTime);
 
 	// Write all the necessary data to .txt file 
 	fileHandler.writeDataToFile(numThreads, benchmarkTotalTime, performanceData.getNumMissed());
