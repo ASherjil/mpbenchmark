@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Find the threads package, which handles platform-specific threading libraries
 find_package(Threads REQUIRED)
+find_package(fmt CONFIG REQUIRED)
 
 # Define the source files we will use
 file(GLOB SOURCES "C++_BenchMark/*.cpp")
@@ -21,21 +22,11 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 # Define the directories that the compiler should look for headers
 target_include_directories(${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/C++_BenchMark")
 
-# Set the compilation options. Here's where you might add options like -O2 for optimization.
-# You can also add them conditionally based on the compiler being used.
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-O2" COMPILER_SUPPORTS_O2)
-if(COMPILER_SUPPORTS_O2)
-    target_compile_options(${PROJECT_NAME} PRIVATE -O2)
-endif()
+# Compiler optimisation 
+target_compile_options(${PROJECT_NAME} PRIVATE -O2)
 
-# If you are using libraries, you need to link them. In this example, we're linking the 'fmt' library.
-find_library(FMT_LIBRARY fmt)
-if(FMT_LIBRARY)
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${FMT_LIBRARY})
-else()
-    message(FATAL_ERROR "fmt library not found")
-endif()
+# Link the fmt library (this uses the imported targets from find_package)
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 
 # Link the threading library. This is done after the other setup and will handle the platform-specific aspects of threading.
 target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
