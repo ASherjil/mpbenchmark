@@ -18,7 +18,7 @@ OS: Ubuntu Linux 22.04.3 LTS
 
 # Installation and usage
 
-(Linux only for now)
+**Linux:**
 
 1- First make sure to install CMake and the `fmt` C++ library. 
 
@@ -49,5 +49,36 @@ Run this to use engine 1 and 12 threads:
 `
 ./MPBenchmark 1 12
 `
+
+**Windows(MinGW):**
+
+Here we make use of the MinGW compiler for windows. 
+
+1- Firstly install cmake and the `fmt` library C++ library. `fmt` library can be installed via `vcpkg`. Installing `fmt` is more tricky on Windows so I will share these steps. 
+
+2- To install `fmt` follow these steps. 
+
+  2.1 - Clone the git repo `git clone https://github.com/microsoft/vcpkg.git`.
+  
+  2.2 - Navigate inside the folder `cd vcpkg`. Then run the `.bat` file: `.\bootstrap-vcpkg.bat`.
+
+  2.3 - Now install the static library for MinGW. `./vcpkg install fmt:x64-mingw-static`. Dynamic library can also be used but I used static for this example. 
+
+3- Once `fmt` is installed. Navigate inside the mpbenchmark folder that contains the cloned repo. Create a new folder for building `mkdir build`.  Now we need to run CMake using the MinGW compiler, specify where to look for the `vcpkg` toolchain and specify the triplet here for MinGW compiler:
+
+```
+cmake -G "MinGW Makefiles" -B [build directory] -S [source directory] -DCMAKE_TOOLCHAIN_FILE=[path to vcpkg]\scripts\buildsystems\vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-mingw-static
+```
+
+Example for my pc would be:
+
+```
+cmake -G "MinGW Makefiles" -B "C:\Users\user1\Desktop\mpbenchmark\build" -S "C:\Users\user1\Desktop\mpbenchmark" -DCMAKE_TOOLCHAIN_FILE="C:\Users\user1\Documents\vcpkg\scripts\buildsystems\vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-mingw-static
+
+```
+
+4- Now we build the project. `cmake --build "C:\Users\user1\Desktop\mpbenchmark\build"`
+
+5- Once built, find and execute the executable produced in the build folder. 
 
 
