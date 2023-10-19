@@ -37,7 +37,7 @@ class SharedPerformanceData{
         void printPerformanceData()const;
     private:
         mutable std::mutex m_mutexLock;
-        const int m_lineCount;
+        const long unsigned int m_lineCount;
         const int m_numThreads;
         int    m_numPoints{}; 
         int    m_numMissed{};

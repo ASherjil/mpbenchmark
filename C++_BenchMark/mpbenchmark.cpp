@@ -71,7 +71,9 @@ int main(int argc,char *argv[]){
 
 	double benchmarkTotalTime = std::chrono::duration<double>(BenchmarkEndTime - BenchmarkStartTime).count();
 	
-	//performanceData.printPerformanceData();
+/* Uncomment this line to see the calculations and performance data 
+	performanceData.printPerformanceData();
+*/
 	fmt::print("{:6f}\n", benchmarkTotalTime);
 
 	// Write all the necessary data to .txt file 
