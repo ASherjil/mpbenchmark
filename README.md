@@ -20,7 +20,11 @@ OS: Ubuntu Linux 22.04.3 LTS
 
 **Linux:**
 
-1- First make sure to install CMake and the `fmt` C++ library. 
+1- First make sure to install CMake and the `fmt` C++ library. CMake and `fmt` can be installed on Debian/Ubuntu distribution like shown below:
+
+  1.1 - Intall CMake using `sudo apt install cmake`. Then verify the intallation `cmake --version`.
+
+  1.2 - Install `fmt` library using the command `sudo apt install libfmt-dev`. 
 
 2- Clone this repository and create a "build" folder inside it. You can do this by running the commands:
 
@@ -56,7 +60,7 @@ Here we make use of the MinGW compiler for windows.
 
 1- Firstly install cmake and the `fmt` library C++ library. `fmt` library can be installed via `vcpkg`. Installing `fmt` is more tricky on Windows so I will share these steps. 
 
-2- To install `fmt` follow these steps. 
+2- Installing `fmt` : 
 
   2.1 - Clone the git repo `git clone https://github.com/microsoft/vcpkg.git`.
   
