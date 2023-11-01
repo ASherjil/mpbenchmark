@@ -1,6 +1,7 @@
 #ifndef WORKER_HPP
 #define WORKER_HPP
 
+#include <array>
 #include "utilities.hpp"
 #include "sharedPerformanceData.hpp"
 
