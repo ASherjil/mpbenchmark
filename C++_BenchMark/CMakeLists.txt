@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Set the project name
-project(MPBenchmark)
+project(mpbenchmark)
 
 # Set the C++ standard we will use
 set(CMAKE_CXX_STANDARD 20)
@@ -13,16 +13,17 @@ find_package(Threads REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 
 # Define the source files we will use
-file(GLOB SOURCES "C++_BenchMark/*.cpp")
+# Assuming the source files are now in the current directory
+file(GLOB SOURCES "*.cpp")
 message("SOURCES = ${SOURCES}")
 
 # Add an executable with the above sources
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-# Define the directories that the compiler should look for headers
-target_include_directories(${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/C++_BenchMark")
+# Since CMakeLists.txt is now in the same directory as source files, adjust accordingly
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR})
 
-# Compiler optimisation 
+# Compiler optimisation
 target_compile_options(${PROJECT_NAME} PRIVATE -O2)
 
 # Link the fmt library (this uses the imported targets from find_package)
