@@ -17,7 +17,7 @@ if [ "$machine_type" == "desktop" ]; then
     # For desktop, use 1, 2, 4, 6, 8, and 16 cores
     core_configs=(1 2 4 6 8 16)
 elif [ "$machine_type" == "raspberry_pi" ]; then
-    # For Raspberry Pi, use 1, 2, 4, 6, and 8 cores
+    # For Raspberry Pi, use 1, 2, 4 cores (assuming Raspberry Pi has up to 4 cores)
     core_configs=(1 2 4 6 8)
 else
     echo "Invalid machine type: $machine_type"
@@ -29,17 +29,29 @@ fi
 # Ensure the build directory path is correct relative to this script's location
 cd build || { echo "Failed to enter the build directory"; exit 3; }
 
-# Function to generate core string for taskset
+# Function to generate core string for taskset, adjusting based on machine type
 generate_core_string() {
     local core_count=$1
     local core_string=""
-    for ((i=0; i<core_count; i++)); do
-        if [ $i -eq 0 ]; then
-            core_string="$i"
-        else
-            core_string="$core_string,$i"
-        fi
-    done
+    local core_index=0
+    if [ "$machine_type" == "desktop" ]; then
+        for ((i=0; i<core_count; i++)); do
+            if [ $i -eq 0 ]; then
+                core_string="$core_index"
+            else
+                core_index=$((core_index + 2)) # Skip to the next physical core
+                core_string="$core_string,$core_index"
+            fi
+        done
+    elif [ "$machine_type" == "raspberry_pi" ]; then
+        for ((i=0; i<core_count; i++)); do
+            if [ $i -eq 0 ]; then
+                core_string="$i"
+            else
+                core_string="$core_string,$i"
+            fi
+        done
+    fi
     echo $core_string
 }
 
@@ -56,4 +68,3 @@ done
 cd "$original_dir"
 
 echo "Benchmark completed."
-
