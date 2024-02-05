@@ -16,7 +16,7 @@ RAM: 16GB
 
 OS: Ubuntu Linux 22.04.3 LTS 
 
-![speedup_plot_desktop](https://github.com/ASherjil/mpbenchmark/assets/92602684/af78a2ef-554f-473a-8f93-b95fde38df81)
+![desktop_speedup](https://github.com/ASherjil/mpbenchmark/assets/92602684/a0623e6f-34fb-4063-b5a9-b30e42e544ab)
 
 The C++ solution especially the optimised SIMD version darastically outperforms all the solutions.  
 
