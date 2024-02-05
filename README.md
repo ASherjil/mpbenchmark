@@ -4,7 +4,9 @@ Mpbenchmark is an application benchmark for evaluating the efficiency of multipr
 
 The original source code for `mpbenchmark` delivered optimal performance with implementations in Ada and C, attributed to their nature as compiled languages. As anticipated, Java and C# implementations yielded lower performance metrics. Given that the original codebase was dated, and faced challenges inherent to C—such as manual memory management and a lack of object-oriented programming features—it became imperative to transition to modern C++. With advancements in C++, especially the advent of `std::thread` introduced in C++11, memory management concerns have been significantly alleviated. It's intriguing to envisage how a modern compiled language like C++ compares in performance against the original C implementation.
 
-# Performance comparision C(OpenMP) vs C++20
+Moreover, an alternative version is also produced to leverage SIMD instructions(the application will determine whether to use AVX2 or NEON depending on the CPU). The SIMD optimised version perfoms over 50% faster than the previous solutions in C(OpenMP) and Ada, please see the benchmark time plot below. 
+
+# Performance comparision of the improved benchmark solution 
 
 Measurements were taken using 16 threads using the following system:
 
@@ -14,7 +16,9 @@ RAM: 16GB
 
 OS: Ubuntu Linux 22.04.3 LTS 
 
-![benchmark_results](https://github.com/ASherjil/mpbenchmark/assets/92602684/9ff36bc6-016e-4ba1-b7a2-b9a47daffbbb)
+![speedup_plot_desktop](https://github.com/ASherjil/mpbenchmark/assets/92602684/af78a2ef-554f-473a-8f93-b95fde38df81)
+
+The C++ solution especially the optimised SIMD version darastically outperforms all the solutions.  
 
 # Installation and usage
 
@@ -26,11 +30,17 @@ OS: Ubuntu Linux 22.04.3 LTS
 
   1.2 - Install `fmt` library using the command `sudo apt install libfmt-dev`. 
 
-2- Clone this repository and create a "build" folder inside it. You can do this by running the commands:
+2- Clone this repository. 
+
+  2.1 - To use the SIMD optimised version(recommended). Checkout to the `WFD` branch, run `git checkout WFD`.
+  
+  2.2 - To use the regular C++ version without SIMD stay on this branch. 
+
+Now create a "build" folder inside "C++_BenchMark". You can do this by running the commands:
 
 ```
-mkdir build
-cd build
+cd C++_BenchMark 
+mkdir build && cd build
 ```
 
 3- Now run cmake and build the project. You can use these commands:
@@ -45,13 +55,13 @@ cmake --build .
 Run this for the default configuration:
 
 `
-./MPBenchmark 
+./mpbenchmark 
 `
 
 Run this to use engine 1 and 12 threads:
 
 `
-./MPBenchmark 1 12
+./mpbenchmark 1 12
 `
 
 **Windows(MinGW):**
