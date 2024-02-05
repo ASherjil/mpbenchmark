@@ -24,7 +24,8 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR})
 
 # Compiler optimisation
-target_compile_options(${PROJECT_NAME} PRIVATE -O2)
+# Compiler optimizations including AVX2
+target_compile_options(${PROJECT_NAME} PRIVATE -O2 -mavx2 -mfma)
 
 # Link the fmt library (this uses the imported targets from find_package)
 target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)

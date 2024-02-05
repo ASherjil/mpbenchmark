@@ -2,6 +2,7 @@
 #define WORKER_HPP
 
 #include <array>
+#include <immintrin.h> // Include for AVX
 #include "utilities.hpp"
 #include "sharedPerformanceData.hpp"
 
@@ -24,6 +25,13 @@ class Worker{
 		 * (Effectively a "run" function).
 		 */
         void operator()();
+
+		/**
+		 * @brief 
+		 * @param v 
+		 * @return double 
+		 */
+		double hsum256_pd(__m256d v);
     private:
         /// @brief Reference to the SharedPerformanceData.
         SharedPerformanceData& m_sharedData;

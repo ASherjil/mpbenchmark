@@ -17,8 +17,8 @@ void Worker::operator()(){
     double used = 0, ExecTotTime = 0, usedTime = 0;
     double PiTime;
     // variables for pi calculation
-    const long num_steps = 1000000;
-    double step = 1.0 / static_cast<double>(num_steps);
+    static constexpr long num_steps = 1000000;
+    static constexpr double step = 1.0 / static_cast<double>(num_steps);
     int i = 0;
     double x, pi, sum;
     // variables for input data
@@ -34,14 +34,24 @@ void Worker::operator()(){
             }
             /** Pi calculation */
             sum = 0;
+            __m256d vec_sum = _mm256_set1_pd(0.0); // Vector for accumulating sums
+            __m256d vec_step = _mm256_set1_pd(step);
+            __m256d vec_half_step = _mm256_set1_pd(0.5 * step);
+            __m256d vec_one = _mm256_set1_pd(1.0);
+            __m256d vec_four = _mm256_set1_pd(4.0);
+            __m256d vec_i, vec_x, vec_temp;
+
             auto piwatch = std::chrono::high_resolution_clock::now();
-            for (i = 0; i < num_steps; i++) {
-                x = (i + 0.5) * step;
-                sum += 4.0 / (1.0 + x * x);
+
+            for (int i = 0; i < num_steps; i += 4) {
+                vec_i = _mm256_set_pd(i+3, i+2, i+1, i);
+                vec_x = _mm256_add_pd(_mm256_mul_pd(vec_i, vec_step), vec_half_step);
+                vec_temp = _mm256_div_pd(vec_four, _mm256_add_pd(vec_one, _mm256_mul_pd(vec_x, vec_x)));
+                vec_sum = _mm256_add_pd(vec_sum, vec_temp);
             }
-            {
-                pi = sum * step;
-            }
+            sum = hsum256_pd(vec_sum);
+            pi = sum * step;
+
             auto end = std::chrono::high_resolution_clock::now();
             PiTime = std::chrono::duration<double>(end - piwatch).count();
 
@@ -131,6 +141,15 @@ void Worker::operator()(){
         }
     }// end of while
 
+}
+
+double Worker::hsum256_pd(__m256d v) {
+    __m256d temp1 = _mm256_hadd_pd(v, v);
+    __m256d temp2 = _mm256_permute2f128_pd(temp1, temp1, 0x1);
+    __m256d temp3 = _mm256_add_pd(temp1, temp2);
+    double result[4];
+    _mm256_storeu_pd(result, temp3);
+    return result[0]; // The sum of all elements in the vector
 }
 
 void Worker::initializeParam(){
