@@ -2,9 +2,22 @@
 #define WORKER_HPP
 
 #include <array>
-#include <immintrin.h> // Include for AVX
 #include "utilities.hpp"
 #include "sharedPerformanceData.hpp"
+
+// Check for AVX2 support
+#if defined(__AVX2__)
+#include <immintrin.h> // AVX2 and earlier
+// Define a function or flag indicating AVX2 support
+
+#elif defined(__ARM_NEON)
+#include <arm_neon.h>
+// Define a function or flag indicating NEON support
+
+#else
+// Fallback for systems without AVX2 or NEON support
+
+#endif
 
 /**
  * @brief The class passed into thread object for performing all the calculations.
@@ -27,17 +40,26 @@ class Worker{
         void operator()();
 
 		/**
-		 * @brief 
-		 * @param v 
-		 * @return double 
+		 * @brief Function used for approximating Pi using an optimised technique based on the CPU. 
+		 * For Intel/AMD CPUs the function will use AVX2 instructions, for ARM CPUs the function will use
+		 * NEON instructions. If neither are available it will use original code.
+		 * @return double approximated pi. 
 		 */
-		double hsum256_pd(__m256d v);
+		double approximatePi();
+
     private:
         /// @brief Reference to the SharedPerformanceData.
         SharedPerformanceData& m_sharedData;
         const int m_engine;
         const int m_id;
 
+		/**
+		 * @brief Helper function used when approximating pi using AVX2 instructions. 
+		 * It is used for performing horizontal sum of a vector. 
+		 * @param v vector. 
+		 * @return double summed vector.
+		 */
+		double hsum256_pd(__m256d v);
 
 /* All variables/functions below  were copied from the C# source code, therefore
    the "m_" prefix was not added to them.

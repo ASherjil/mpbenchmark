@@ -16,11 +16,7 @@ void Worker::operator()(){
     double ExecTime = 0;
     double used = 0, ExecTotTime = 0, usedTime = 0;
     double PiTime;
-    // variables for pi calculation
-    static constexpr long num_steps = 1000000;
-    static constexpr double step = 1.0 / static_cast<double>(num_steps);
-    int i = 0;
-    double x, pi, sum;
+    double pi;
     // variables for input data
     double a, b, c, d;
 
@@ -33,28 +29,13 @@ void Worker::operator()(){
                 break;
             }
             /** Pi calculation */
-            sum = 0;
-            __m256d vec_sum = _mm256_set1_pd(0.0); // Vector for accumulating sums
-            __m256d vec_step = _mm256_set1_pd(step);
-            __m256d vec_half_step = _mm256_set1_pd(0.5 * step);
-            __m256d vec_one = _mm256_set1_pd(1.0);
-            __m256d vec_four = _mm256_set1_pd(4.0);
-            __m256d vec_i, vec_x, vec_temp;
-
             auto piwatch = std::chrono::high_resolution_clock::now();
 
-            for (int i = 0; i < num_steps; i += 4) {
-                vec_i = _mm256_set_pd(i+3, i+2, i+1, i);
-                vec_x = _mm256_add_pd(_mm256_mul_pd(vec_i, vec_step), vec_half_step);
-                vec_temp = _mm256_div_pd(vec_four, _mm256_add_pd(vec_one, _mm256_mul_pd(vec_x, vec_x)));
-                vec_sum = _mm256_add_pd(vec_sum, vec_temp);
-            }
-            sum = hsum256_pd(vec_sum);
-            pi = sum * step;
+            pi = approximatePi();
 
             auto end = std::chrono::high_resolution_clock::now();
             PiTime = std::chrono::duration<double>(end - piwatch).count();
-
+            
             /** read input data ---Speed Altitude and Throttle */
             int index = CurrentPoint - 1;
             a = m_sharedData.getInputArrayElement(index, 0);
@@ -150,6 +131,60 @@ double Worker::hsum256_pd(__m256d v) {
     double result[4];
     _mm256_storeu_pd(result, temp3);
     return result[0]; // The sum of all elements in the vector
+}
+
+double Worker::approximatePi(){
+    double pi = 0.0;
+    static constexpr long num_steps = 1000000;
+    static constexpr double step = 1.0 / static_cast<double>(num_steps);
+
+#if defined(__AVX2__)
+    // Insert AVX2 specific code here
+    double sum = 0;
+    __m256d vec_sum = _mm256_set1_pd(0.0); // Vector for accumulating sums
+    __m256d vec_step = _mm256_set1_pd(step);
+    __m256d vec_half_step = _mm256_set1_pd(0.5 * step);
+    __m256d vec_one = _mm256_set1_pd(1.0);
+    __m256d vec_four = _mm256_set1_pd(4.0);
+    __m256d vec_i, vec_x, vec_temp;
+
+    for (int i = 0; i < num_steps; i += 4) {
+        vec_i = _mm256_set_pd(i+3, i+2, i+1, i);
+        vec_x = _mm256_add_pd(_mm256_mul_pd(vec_i, vec_step), vec_half_step);
+        vec_temp = _mm256_div_pd(vec_four, _mm256_add_pd(vec_one, _mm256_mul_pd(vec_x, vec_x)));
+        vec_sum = _mm256_add_pd(vec_sum, vec_temp);
+    }
+    sum = hsum256_pd(vec_sum);
+    pi = sum * step;
+
+#elif defined(__ARM_NEON)
+    // Insert NEON specific code here
+    float32_t f_step = 1.0f / static_cast<float32_t>(num_steps); // Using float for NEON
+    float32x4_t vec_step = vdupq_n_f32(f_step);
+    float32x4_t vec_half_step = vdupq_n_f32(0.5f * f_step);
+    float32x4_t vec_one = vdupq_n_f32(1.0f);
+    float32x4_t vec_four = vdupq_n_f32(4.0f);
+    float32_t sum = 0.0f; // Using float for NEON
+
+    for (int i = 0; i < num_steps; i += 4) {
+        float32x4_t vec_i = vsetq_lane_f32(i + 3, vsetq_lane_f32(i + 2, vsetq_lane_f32(i + 1, vsetq_lane_f32(i, vdupq_n_f32(0.0f), 0), 1), 2), 3);
+        float32x4_t vec_x = vaddq_f32(vmulq_f32(vec_i, vec_step), vec_half_step);
+        float32x4_t vec_temp = vdivq_f32(vec_four, vaddq_f32(vec_one, vmulq_f32(vec_x, vec_x)));
+        sum += vaddvq_f32(vec_temp); // Horizontal sum of vector elements
+    }
+
+    pi = sum * f_step;
+#else
+    // Insert regular code here
+    double sum = 0.0;
+    for (int i = 0; i < num_steps; i++) {
+        double x = (i + 0.5) * step;
+        sum += 4.0 / (1.0 + x * x);
+    }
+    pi = sum * step;
+
+#endif
+    return pi;
 }
 
 void Worker::initializeParam(){

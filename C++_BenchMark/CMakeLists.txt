@@ -23,13 +23,31 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 # Since CMakeLists.txt is now in the same directory as source files, adjust accordingly
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR})
 
-# Compiler optimisation
-# Compiler optimizations including AVX2
-target_compile_options(${PROJECT_NAME} PRIVATE -O2 -mavx2 -mfma)
+# Compiler optimizations
+include(CheckCXXCompilerFlag)
+
+# Check and enable AVX2 and FMA for x86_64 architecture
+CHECK_CXX_COMPILER_FLAG("-mavx2" COMPILER_SUPPORTS_AVX2)
+CHECK_CXX_COMPILER_FLAG("-mfma" COMPILER_SUPPORTS_FMA)
+if(COMPILER_SUPPORTS_AVX2 AND COMPILER_SUPPORTS_FMA)
+  target_compile_options(${PROJECT_NAME} PRIVATE -mavx2 -mfma)
+endif()
+
+# Check and enable NEON for ARM architecture
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
+  CHECK_CXX_COMPILER_FLAG("-mfpu=neon" COMPILER_SUPPORTS_NEON)
+  if(COMPILER_SUPPORTS_NEON)
+    target_compile_options(${PROJECT_NAME} PRIVATE -mfpu=neon)
+  endif()
+endif()
+
+# General optimization flag
+target_compile_options(${PROJECT_NAME} PRIVATE -O2)
 
 # Link the fmt library (this uses the imported targets from find_package)
 target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 
 # Link the threading library. This is done after the other setup and will handle the platform-specific aspects of threading.
 target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+
 
