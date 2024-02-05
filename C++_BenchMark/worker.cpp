@@ -35,7 +35,7 @@ void Worker::operator()(){
 
             auto end = std::chrono::high_resolution_clock::now();
             PiTime = std::chrono::duration<double>(end - piwatch).count();
-            
+
             /** read input data ---Speed Altitude and Throttle */
             int index = CurrentPoint - 1;
             a = m_sharedData.getInputArrayElement(index, 0);
@@ -122,15 +122,6 @@ void Worker::operator()(){
         }
     }// end of while
 
-}
-
-double Worker::hsum256_pd(__m256d v) {
-    __m256d temp1 = _mm256_hadd_pd(v, v);
-    __m256d temp2 = _mm256_permute2f128_pd(temp1, temp1, 0x1);
-    __m256d temp3 = _mm256_add_pd(temp1, temp2);
-    double result[4];
-    _mm256_storeu_pd(result, temp3);
-    return result[0]; // The sum of all elements in the vector
 }
 
 double Worker::approximatePi(){

@@ -33,12 +33,9 @@ if(COMPILER_SUPPORTS_AVX2 AND COMPILER_SUPPORTS_FMA)
   target_compile_options(${PROJECT_NAME} PRIVATE -mavx2 -mfma)
 endif()
 
-# Check and enable NEON for ARM architecture
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
-  CHECK_CXX_COMPILER_FLAG("-mfpu=neon" COMPILER_SUPPORTS_NEON)
-  if(COMPILER_SUPPORTS_NEON)
-    target_compile_options(${PROJECT_NAME} PRIVATE -mfpu=neon)
-  endif()
+  # For ARMv8-A (aarch64), NEON is always available. No need for -mfpu=neon
+  # We can set architecture-specific flags if necessary, but for NEON, it's not required.
 endif()
 
 # General optimization flag

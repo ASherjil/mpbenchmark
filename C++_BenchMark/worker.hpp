@@ -8,7 +8,21 @@
 // Check for AVX2 support
 #if defined(__AVX2__)
 #include <immintrin.h> // AVX2 and earlier
-// Define a function or flag indicating AVX2 support
+
+/**
+ * @brief Helper function used when approximating pi using AVX2 instructions. 
+ * It is used for performing horizontal sum of a vector. 
+ * @param v vector. 
+ * @return double summed vector.
+ */
+inline double hsum256_pd(__m256d v) {
+    __m256d temp1 = _mm256_hadd_pd(v, v);
+    __m256d temp2 = _mm256_permute2f128_pd(temp1, temp1, 0x01);
+    __m256d temp3 = _mm256_add_pd(temp1, temp2);
+    double result[4];
+    _mm256_storeu_pd(result, temp3);
+    return result[0]; // The sum of all elements in the vector
+}
 
 #elif defined(__ARM_NEON)
 #include <arm_neon.h>
@@ -52,14 +66,6 @@ class Worker{
         SharedPerformanceData& m_sharedData;
         const int m_engine;
         const int m_id;
-
-		/**
-		 * @brief Helper function used when approximating pi using AVX2 instructions. 
-		 * It is used for performing horizontal sum of a vector. 
-		 * @param v vector. 
-		 * @return double summed vector.
-		 */
-		double hsum256_pd(__m256d v);
 
 /* All variables/functions below  were copied from the C# source code, therefore
    the "m_" prefix was not added to them.
