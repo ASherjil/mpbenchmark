@@ -150,21 +150,24 @@ double Worker::approximatePi(){
 
 #elif defined(__ARM_NEON)
     // Insert NEON specific code here
-    float32_t f_step = 1.0f / static_cast<float32_t>(num_steps); // Using float for NEON
-    float32x4_t vec_step = vdupq_n_f32(f_step);
-    float32x4_t vec_half_step = vdupq_n_f32(0.5f * f_step);
-    float32x4_t vec_one = vdupq_n_f32(1.0f);
-    float32x4_t vec_four = vdupq_n_f32(4.0f);
-    float32_t sum = 0.0f; // Using float for NEON
+    float64x2_t vec_step = vdupq_n_f64(step);
+    float64x2_t vec_half_step = vdupq_n_f64(0.5 * step);
+    float64x2_t vec_one = vdupq_n_f64(1.0);
+    float64x2_t vec_four = vdupq_n_f64(4.0);
+    float64_t sum = 0.0;
 
-    for (int i = 0; i < num_steps; i += 4) {
-        float32x4_t vec_i = vsetq_lane_f32(i + 3, vsetq_lane_f32(i + 2, vsetq_lane_f32(i + 1, vsetq_lane_f32(i, vdupq_n_f32(0.0f), 0), 1), 2), 3);
-        float32x4_t vec_x = vaddq_f32(vmulq_f32(vec_i, vec_step), vec_half_step);
-        float32x4_t vec_temp = vdivq_f32(vec_four, vaddq_f32(vec_one, vmulq_f32(vec_x, vec_x)));
-        sum += vaddvq_f32(vec_temp); // Horizontal sum of vector elements
+    for (int i = 0; i < num_steps; i += 2) {
+        // Since direct lane setting for float64x2_t via intrinsics like vsetq_lane_f64 isn't straightforward,
+        // We compute x and its index scalarly and then load them into vectors.
+        double x0 = (i + 0.5) * step;
+        double x1 = (i + 1.5) * step;
+        float64x2_t vec_x = {x0, x1}; // Directly initialize the vector with double values.
+
+        float64x2_t vec_temp = vdivq_f64(vec_four, vaddq_f64(vec_one, vmulq_f64(vec_x, vec_x)));
+        sum += vaddvq_f64(vec_temp); // Horizontal sum of vector elements.
     }
 
-    pi = sum * f_step;
+    pi = sum * step;
 #else
     // Insert regular code here
     double sum = 0.0;

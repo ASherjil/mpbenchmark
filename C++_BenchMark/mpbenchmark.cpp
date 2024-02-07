@@ -45,8 +45,8 @@ int main(int argc,char *argv[]){
 
     // Load data from input .txt file into an array.
 	Utilities::FileDataLoader fileHandler("../../IOFiles/InputFile.txt",
-										  "../../IOFiles/C++_SIMD/ResponseTimeForCore",
-										  "../../IOFiles/C++_SIMD/DeadLineForCore");
+										  "../../IOFiles/C++_NEON_DOUBLE/ResponseTimeForCore",
+										  "../../IOFiles/C++_NEON_DOUBLE/DeadLineForCore");
 
     // Pass the input data from the .txt file into the SharedPerformanceObject.
 	SharedPerformanceData performanceData(fileHandler.getInputArray(), numThreads);
