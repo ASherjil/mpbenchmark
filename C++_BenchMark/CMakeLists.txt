@@ -38,7 +38,7 @@ if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch
   # We can set architecture-specific flags if necessary, but for NEON, it's not required.
 endif()
 
-# General optimization flag
+# Change general optimization flag to debug flags
 target_compile_options(${PROJECT_NAME} PRIVATE -O2)
 
 # Link the fmt library (this uses the imported targets from find_package)
@@ -46,5 +46,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 
 # Link the threading library. This is done after the other setup and will handle the platform-specific aspects of threading.
 target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+
 
 

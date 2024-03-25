@@ -137,13 +137,15 @@ double Worker::approximatePi(){
     __m256d vec_half_step = _mm256_set1_pd(0.5 * step);
     __m256d vec_one = _mm256_set1_pd(1.0);
     __m256d vec_four = _mm256_set1_pd(4.0);
-    __m256d vec_i, vec_x, vec_temp;
+    __m256d vec_x, vec_temp;
+    __m256d vec_i = _mm256_set_pd(3, 2, 1, 0); // Initial indices
+    __m256d vec_increment = _mm256_set1_pd(4); // Increment vector
 
     for (int i = 0; i < num_steps; i += 4) {
-        vec_i = _mm256_set_pd(i+3, i+2, i+1, i);
-        vec_x = _mm256_add_pd(_mm256_mul_pd(vec_i, vec_step), vec_half_step);
+        vec_x    = _mm256_add_pd(_mm256_mul_pd(vec_i, vec_step), vec_half_step);
         vec_temp = _mm256_div_pd(vec_four, _mm256_add_pd(vec_one, _mm256_mul_pd(vec_x, vec_x)));
-        vec_sum = _mm256_add_pd(vec_sum, vec_temp);
+        vec_sum  = _mm256_add_pd(vec_sum, vec_temp);
+        vec_i    = _mm256_add_pd(vec_i, vec_increment);
     }
     sum = hsum256_pd(vec_sum);
     pi = sum * step;
