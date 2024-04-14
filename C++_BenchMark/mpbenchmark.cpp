@@ -8,15 +8,15 @@
 
 int main(int argc,char *argv[]){
 
-    int engine = 3; // Default to Turbofan
-    unsigned int numThreads = 0; // Will be determined based on hardware or user input
+    int engine{};
+    int numThreads{};
 
     if (argc > 1) {
         engine = std::atoi(argv[1]); // Convert the argument to an integer
     }
 
     if (argc > 2) {
-        numThreads = static_cast<unsigned int>(std::atoi(argv[2])); // Convert the argument to an integer
+        numThreads = std::atoi(argv[2]); // Convert the argument to an integer
     }
 
     // If number of threads not specified, default to maximum available
@@ -62,9 +62,7 @@ int main(int argc,char *argv[]){
 	}
 
 	for (std::thread &t : threadPool) {// wait for the threads to finish 
-    	if (t.joinable()) {
-    	    t.join(); 
-    	}
+        t.join();
 	}
 	auto BenchmarkEndTime = std::chrono::high_resolution_clock::now();
 //-----------END TIMING NOW 
